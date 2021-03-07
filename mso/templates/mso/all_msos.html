@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>Dashboard</title>
+</head>
+<body>
+	<div class="container">
+    {%for mso in msos %}
+    <div class="row mso_row" id="r{{mso.id}}">
+        <div class="col s12">
+            <br>
+            <a id="read_mode_a" href="/mso/{{mso.id}}">
+                <div class="chip">MSO #{{mso.id}}</div>
+                <span class="title mso_title">Description of Service</span>
+                <blockquote>{{mso.description_of_service}}</blockquote>
+                <span class="title mso_title">Actual Work Description</span>
+                <blockquote>{{mso.actual_work_descripition}}</blockquote>
+                </a>
+                {% if current_user_name == mso.posted_by_name %}
+                {% if mso.manager_approval == False or mso.supervisor_approval == False or mso.completed %}
+                <a id="" href="/mso/edit/{{mso.id}}" class="waves-effect waves-light green btn modal-trigger">Edit</a>
+                <a id="{{mso.id}}" href="#" class="delete waves-effect waves-light red btn modal-trigger">Delete</a>
+                {% endif %}
+                {% elif current_user_name != mso.posted_by_name %}
+                <a id="" href="/mso/edit/{{mso.id}}" class="waves-effect waves-light disabled green btn modal-trigger">Edit</a>
+                <a id="{{mso.id}}" href="#" class="delete waves-effect waves-light red disabled btn modal-trigger">Delete</a>
+                {% else %}
+                <a id="" href="/mso/edit/{{mso.id}}" class="waves-effect waves-light disabled green btn modal-trigger">Edit</a>
+                <a id="{{mso.id}}" href="#" class="delete waves-effect waves-light red disabled btn modal-trigger">Delete</a>
+                {% endif %}
+                
+                <a href="/mso/{{mso.id}}" class="waves-effect waves-light blue btn modal-trigger">Preview</a>
+            <br>
+            <br>
+        </div>
+    </div>
+        {% endfor %}
+
+        <br>
+        <br>
+        <div class="pagination">
+            <span class="step-links">
+                {% if msos.has_previous %}
+                    <li class="waves-effect material-icons large">
+                            <a href="?page={{ msos.previous_page_number }}">
+                            <i class="material-icons large">chevron_left</i>
+                        </a>
+                    </li>
+                {% endif %}
+        
+                <span class="current">
+                    Page {{ msos.number }} of {{ msos.paginator.num_pages }}.
+                </span>
+        
+                {% if msos.has_next %}
+                    
+                    <!-- <a href="?page={{ msos.paginator.num_pages }}" class="waves-effect waves-light blue btn modal-trigger">last &raquo;</a> -->
+                    <li class="waves-effect">
+                            <a href="?page={{ msos.next_page_number }}">
+                            <i class="material-icons large">chevron_right</i>
+                        </a>
+                    </li>
+                {% endif %}
+            </span>
+        </div>
+        <br>
+        <br>
+        <br>
+    </div>
+</body>
+</html>
