@@ -99,10 +99,9 @@ def get_docs_title(DOCUMENT_ID):
 	document = service.documents().get(documentId=DOCUMENT_ID).execute()
 	print('The title of the document is: {}'.format(document.get('title')))
 
-def copy_template():
+def copy_template(document_id):
 	service = build('docs', 'v1', credentials=creds)
 	mso_title = str(int(time.time()))
-	document_id = '1BaNYguo0LAfxv07Y0_h9uPvgmQ9WUv1twj4W6hZCzx0'
 	body = {
 		'name': mso_title
 	}
@@ -113,27 +112,69 @@ def copy_template():
 
 def edit_template():
 	service = build('docs', 'v1', credentials=creds)
-	document_id = '1BaNYguo0LAfxv07Y0_h9uPvgmQ9WUv1twj4W6hZCzx0'
-	customer_name = 'Elven'
-	date = 5555
+	document_id = '1zvYdumk8HUHuVa7cHmO2vJKNK9vz6915UPdJoAiOo6k'
+	mso_num = '561'
+	request_time = '04:51'
 
 	requests = [
 		 {
 			'replaceAllText': {
 				'containsText': {
-					'text': '{{name}}',
-					'matchCase':  'true'
+					'text': '{{mso_no}}',
+					'matchCase':	'true'
 				},
-				'replaceText': customer_name,
+				'replaceText': mso_num,
 			}}, {
 			'replaceAllText': {
 				'containsText': {
-					'text': '{{date}}',
-					'matchCase':  'true'
+					'text': '{{tReq}}',
+					'matchCase':	'true'
 				},
-				'replaceText': str(date),
+				'replaceText': request_time,
 			}
 		}
 	]
 
 	result = service.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
+
+
+def rename_file(file_id, new_title):
+	"""Rename a file.
+
+	Args:
+		file_id: ID of the file to rename.
+		new_title: New title for the file.
+	Returns:
+		Updated file metadata if successful, None otherwise.
+	"""
+	service = build('drive', 'v2', credentials=creds)
+
+	file = {'title': new_title}
+
+	# Rename the file.
+	updated_file = service.files().patch(
+			fileId=file_id,
+			body=file,
+			fields='title').execute()
+
+	return updated_file
+
+
+def copy_file(origin_file_id, copy_title):
+	"""Copy an existing file.
+
+	Args:
+		origin_file_id: ID of the origin file to copy.
+		copy_title: Title of the copy.
+
+	Returns:
+		The copied file if successful, None otherwise.
+	"""
+	service = build('drive', 'v3', credentials=creds)
+	copied_file = {'title': copy_title}
+	new_file = service.files().copy(fileId=origin_file_id, body=copied_file).execute()
+	new_file_id = new_file['id']
+	fn = 'mso_' + str(int(time.time()))
+	rename_file(new_file_id, fn)
+	print(f'{fn} created - {new_file_id}')
+	
