@@ -99,30 +99,25 @@ def get_docs_title(DOCUMENT_ID):
 	document = service.documents().get(documentId=DOCUMENT_ID).execute()
 	print('The title of the document is: {}'.format(document.get('title')))
 
-def edit_template():
+def edit_template(document_id, vals):
 	service = build('docs', 'v1', credentials=creds)
-	document_id = '1zvYdumk8HUHuVa7cHmO2vJKNK9vz6915UPdJoAiOo6k'
 	mso_num = '561'
 	request_time = '04:51'
 
-	requests = [
-		 {
-			'replaceAllText': {
-				'containsText': {
-					'text': '{{mso_no}}',
-					'matchCase':	'true'
-				},
-				'replaceText': mso_num,
-			}}, {
-			'replaceAllText': {
-				'containsText': {
-					'text': '{{tReq}}',
-					'matchCase':	'true'
-				},
-				'replaceText': request_time,
+	requests = []
+
+	for k in vals:
+		requests.append(
+			{
+				'replaceAllText': {
+					'containsText': {
+						'text': k,
+						'matchCase':	'true'
+					},
+					'replaceText': vals[k],
+				}
 			}
-		}
-	]
+		)
 
 	result = service.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
 
@@ -166,3 +161,4 @@ def copy_template(origin_file_id):
 	fn = 'mso_' + str(int(time.time()))
 	rename_file(new_file_id, fn)
 	print(f'{fn} created - {new_file_id}')
+	return new_file_id

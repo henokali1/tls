@@ -18,7 +18,7 @@
     <div class="row mso_row" id="r{{mso.id}}">
         <div class="col s12">
             <br>
-            <a id="read_mode_a" href="/mso/{{mso.id}}">
+            <a id="read_mode_a" target="_blank" href="https://docs.google.com/document/d/{{mso.g_drive_id}}/preview">
                 <div class="chip">MSO #{{mso.id}}</div>
                 <span class="title mso_title">Description of Service</span>
                 <blockquote>{{mso.description_of_service}}</blockquote>
@@ -38,7 +38,7 @@
                 <a id="{{mso.id}}" href="#" class="delete waves-effect waves-light red disabled btn modal-trigger">Delete</a>
                 {% endif %}
                 
-                <a href="/mso/{{mso.id}}" class="waves-effect waves-light blue btn modal-trigger">Preview</a>
+                <a target="_blank" href="https://docs.google.com/document/d/{{mso.g_drive_id}}/preview" class="waves-effect waves-light blue btn modal-trigger">Preview</a>
             <br>
             <br>
         </div>

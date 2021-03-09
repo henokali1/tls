@@ -21,6 +21,7 @@ class Mso(models.Model):
     posted_by_name = models.CharField(max_length=254, default='')
     requested_by_other_department = models.BooleanField(default=False)
     completed = models.BooleanField(default=False)
+    g_drive_id = models.CharField(max_length=254, default='')
 
     def __str__(self):
         return str(self.pk)
